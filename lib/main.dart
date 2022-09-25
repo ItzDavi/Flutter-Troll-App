@@ -49,13 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   loadVideoPlayer(){
-    controller = VideoPlayerController.asset('assets/videos/video.mp4');
-    controller.addListener(() {
-      setState(() {});
-    });
+    controller = VideoPlayerController.asset('assets/rr.mp4');
+
     controller.initialize().then((value){
-      setState(() {controller.play();});
+      setState(() {
+        if (controller.value.isInitialized && loadingDoubleTapped) {
+        controller.play();
+      }});
     });
+
+
   }
 
   void manageCounter() {
@@ -129,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                  ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 280.0),
+                  padding: const EdgeInsets.only(top: 180.0),
                   child: Column(
                     children: [
                       Visibility(
@@ -152,8 +155,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       Visibility(
-                        visible: loadingDoubleTapped,
-                          child: VideoPlayer(controller)
+                          visible: loadingDoubleTapped,
+                          child: SizedBox(
+                              width: double.infinity,
+                              height: 200,
+                              child: AspectRatio(
+                                  aspectRatio: 9 / 16,
+                                  child: VideoPlayer(controller)),
+                          )
                       )
                     ],
                   ),
@@ -161,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding:
                     const EdgeInsets.only(
-                        top: 180.0),
+                        top: 80.0),
                   child:
                     Column(
                       children: [
@@ -170,11 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  controller.initialize();
                                   controller.play();
                                 });
                               },
-                              icon: const Icon(Icons.play_arrow_rounded, color: Colors.blue,)
+                              icon: Icon(controller.value.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded, color: Colors.blue,)
                           ),
                         ),
                         ElevatedButton(
